@@ -1,16 +1,70 @@
 #!/usr/bin/env bash 
 
-if [ ! -d "$1" ] ; then
-    echo "Unable to find config directory $1"
+set -e 
+
+function usage() {
+    echo "Tanka Docker - renders Tanka configs"
     echo ""
-    echo "Usage: $0 <directory path>"
+    echo 'Usage: $0 [-i|--input] <tanka directory> [-o|--output] <manifest directory> '
     echo ""
+    echo "Optional flags:"
+    echo ""
+    echo "  [-e|--environment]  - Tanka environment to render"
+    echo "  [-h|--help]         - This help text"
+    echo ""
+}
+
+INTERACTIVE=false
+ENVIRONMENT=default
+
+_setArgs() {
+    while [ "${1:-}" != "" ]; do
+        case "$1" in
+            "-h" | "--help")
+                usage
+                exit
+                ;;
+            "--interactive")
+                INTERACTIVE=true
+                ;;
+            "-i" | "--input")
+                shift
+                CFGPATH="$(readlink -f $1)"
+                ;;
+            "-o" | "--output")
+                shift
+                OUTPUTDIR="$(readlink -f $1)"
+                ;;
+            "-e" | "--environment")
+                shift
+                ENVIRONMENT="$1"
+                ;;
+        esac
+        shift
+    done
+}
+
+_setArgs $*
+
+echo $CFGPATH
+echo $OUTPUTDIR
+echo "foobar"
+if [[ -z "$CFGPATH" || -z "$OUTPUTDIR" ]] ; then 
+    usage
     exit 1
 fi
 
-# Docker doesn't like trailing slashes
-CFGPATH="$(echo $1 | sed 's/\/$//g')"
+if [ "$INTERACTIVE" == 'true' ] ; then 
+    COMMAND="bash"
+else
+    COMMAND="tk export /config/environments/${ENVIRONMENT} /output/"
+fi
+
+GROUP="$(groups | awk '{print $1}')"
+GID="$(getent group ${GROUP} | awk -F: '{print $3}')"
 
 docker run -it --rm --name tanka \
-    -v "$CFGPATH":/config \
-    docker-tanka:latest bash
+    -u $UID:$GID \
+    --mount type=bind,source="$CFGPATH",target="/config" \
+    --mount type=bind,source="$OUTPUTDIR",target="/output" \
+    docker-tanka:latest $COMMAND
