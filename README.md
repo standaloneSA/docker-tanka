@@ -7,11 +7,13 @@ Usage the tanka script to point it to a tanka config and ouput directory:
 ```
 Tanka Docker - renders Tanka configs
 
-Usage: $0 [-i|--input] <tanka directory> [-o|--output] <manifest directory>
+Usage: ./tanka [-i|--input] <tanka directory> [-o|--output] <manifest directory>
 
 Optional flags:
 
-  [-e|--environment]  - Tanka environment to render
-  [-h|--help]         - This help text
+    [-e|--environment]  - Tanka environment to render
+    [-h|--help]         - This help text
+
+
 ```
 

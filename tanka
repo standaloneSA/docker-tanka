@@ -5,7 +5,7 @@ set -e
 function usage() {
     echo "Tanka Docker - renders Tanka configs"
     echo ""
-    echo 'Usage: $0 [-i|--input] <tanka directory> [-o|--output] <manifest directory> '
+    echo "Usage: $0 [-i|--input] <tanka directory> [-o|--output] <manifest directory> "
     echo ""
     echo "Optional flags:"
     echo ""
