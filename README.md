@@ -4,8 +4,7 @@ A small simple repo for building a docker tanka container that can build and com
 
 Usage the tanka script to point it to a tanka config and ouput directory: 
 
-Help Text
----------
+```
 Tanka Docker - renders Tanka configs
 
 Usage: $0 [-i|--input] <tanka directory> [-o|--output] <manifest directory>
@@ -13,6 +12,6 @@ Usage: $0 [-i|--input] <tanka directory> [-o|--output] <manifest directory>
 Optional flags:
 
   [-e|--environment]  - Tanka environment to render
-    [-h|--help]         - This help text
-
+  [-h|--help]         - This help text
+```
 
