@@ -1,4 +1,4 @@
-A small simple repo for building a docker tanka container that can build and compile jsonnet. 
+A small simple repo for building a docker [Tanka](https://tanka.dev/) container that can build and compile jsonnet. 
 
 './build' creates the docker image. './build --latest' tags it as latest. 
 
