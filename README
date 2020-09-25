@@ -1,0 +1,9 @@
+# Under Construction. Does not work. 
+
+A small simple repo for building a docker tanka container that can build and compile jsonnet. 
+
+'./build' creates the docker image. './build --latest' tags it as latest. 
+
+Usage the tanka script to point it to a tanka config. 
+
+

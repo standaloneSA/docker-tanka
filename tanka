@@ -1,0 +1,16 @@
+#!/usr/bin/env bash 
+
+if [ ! -d "$1" ] ; then
+    echo "Unable to find config directory $1"
+    echo ""
+    echo "Usage: $0 <directory path>"
+    echo ""
+    exit 1
+fi
+
+# Docker doesn't like trailing slashes
+CFGPATH="$(echo $1 | sed 's/\/$//g')"
+
+docker run -it --rm --name tanka \
+    -v "$CFGPATH":/config \
+    docker-tanka:latest bash
