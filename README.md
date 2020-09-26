@@ -11,8 +11,11 @@ Usage: ./tanka [-i|--input] <tanka directory> [-o|--output] <manifest directory>
 
 Optional flags:
 
-    [-e|--environment]  - Tanka environment to render
-    [-h|--help]         - This help text
+  [-e|--environment]  - Tanka environment to render
+  [--interactive]     - Mounts the directories but drops you into a shell
+  [--explore]         - Opens a shell, but doesn't require mounted dirs
+  [-h|--help]         - This help text
+
 
 
 ```
