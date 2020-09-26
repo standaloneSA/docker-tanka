@@ -1,0 +1,13 @@
+Welcome to the interactive tanka environment. 
+
+If you have specified an input, it is mounted in /config
+If you have specified an output, it is mounted in /output
+
+Various commands are installed in /usr/local/bin for you to use 
+to poke and prod. 
+
+    * tk        - Tanka itself
+    * jsonnet   - the compiled jsonnet binary from Google
+    * jb        - jsonnet bundler
+
+

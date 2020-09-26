@@ -1,6 +1,6 @@
 #!/usr/bin/env bash 
-
-set -e 
+set -x
+#set -e 
 
 function usage() {
     echo "Tanka Docker - renders Tanka configs"
@@ -10,6 +10,8 @@ function usage() {
     echo "Optional flags:"
     echo ""
     echo "  [-e|--environment]  - Tanka environment to render"
+    echo "  [--interactive]     - Mounts the directories but drops you into a shell"
+    echo "  [--explore]         - Opens a shell, but doesn't require mounted dirs"
     echo "  [-h|--help]         - This help text"
     echo ""
 }
@@ -26,6 +28,10 @@ _setArgs() {
                 ;;
             "--interactive")
                 INTERACTIVE=true
+                ;;
+            "--explore")
+                INTERACTIVE=true
+                EXPLORE=true
                 ;;
             "-i" | "--input")
                 shift
@@ -48,23 +54,42 @@ _setArgs $*
 
 echo $CFGPATH
 echo $OUTPUTDIR
-echo "foobar"
-if [[ -z "$CFGPATH" || -z "$OUTPUTDIR" ]] ; then 
-    usage
-    exit 1
-fi
 
+# We don't want to enforce config paths for exploration
+if [ "$EXPLORE" != "true" ] ; then 
+   if [[ -z "$CFGPATH" || -z "$OUTPUTDIR" ]] ; then 
+       usage
+       exit 1
+   fi
+fi
+USERSTR=""
 if [ "$INTERACTIVE" == 'true' ] ; then 
     COMMAND="bash"
+   # Lets not overwrite the uid/gid interactively, to prevent
+   # messy "I have no name!" messages.
+   USERSTR=""
 else
-    COMMAND="tk export /config/environments/${ENVIRONMENT} /output/"
+   # We want to run this as the user, so it's owned by them 
+   # when it's complete. 
+   USERSTR="-u $UID:$GID" 
+   COMMAND="tk export /config/environments/${ENVIRONMENT} /output/"
+fi
+
+CFGMOUNT=""
+if [ ! -z "$CFGPATH" ] ; then 
+    CFGMOUNT="--mount type=bind,source="$CFGPATH",target=/config"
+fi
+
+OUTPUTMOUNT=""
+if [ ! -z "$OUTPUTDIR" ] ; then
+    OUTPUTMOUNT="--mount type=bind,source="$OUTPUTDIR",target=/output"
 fi
 
 GROUP="$(groups | awk '{print $1}')"
 GID="$(getent group ${GROUP} | awk -F: '{print $3}')"
 
 docker run -it --rm --name tanka \
-    -u $UID:$GID \
-    --mount type=bind,source="$CFGPATH",target="/config" \
-    --mount type=bind,source="$OUTPUTDIR",target="/output" \
+    $USERSTR \
+    $CFGMOUNT \
+    $OUTPUTMOUNT \
     docker-tanka:latest $COMMAND
